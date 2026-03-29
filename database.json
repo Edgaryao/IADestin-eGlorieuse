@@ -1,0 +1,40 @@
+{
+  "personnes": [
+    {
+      "id": 1,
+      "nom": "Dupont",
+      "prenom": "Jean",
+      "age": 35,
+      "profession": "Développeur",
+      "ville": "Paris",
+      "email": "[email]"
+    },
+    {
+      "id": 2,
+      "nom": "Martin",
+      "prenom": "Marie",
+      "age": 28,
+      "profession": "Designer",
+      "ville": "Lyon",
+      "email": "[email]"
+    },
+    {
+      "id": 3,
+      "nom": "Bernard",
+      "prenom": "Pierre",
+      "age": 42,
+      "profession": "Manager",
+      "ville": "Marseille",
+      "email": "[email]"
+    },
+    {
+      "id": 4,
+      "nom": "Dubois",
+      "prenom": "Sophie",
+      "age": 31,
+      "profession": "Architecte",
+      "ville": "Toulouse",
+      "email": "[email]"
+    }
+  ]
+}

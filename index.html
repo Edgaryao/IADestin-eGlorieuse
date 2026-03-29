@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <title>Assistant Destinée Glorieuse</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+
+<body>
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-content">
+            <img src="logo.png" alt="Logo" class="loading-logo">
+            <h1 class="loading-title">Assistant Destinée Glorieuse</h1>
+            <p class="loading-subtitle">Chargement en cours...</p>
+            <div class="loading-bar">
+                <div class="loading-progress" id="loadingProgress"></div>
+            </div>
+            <p class="loading-status" id="loadingStatus">Initialisation...</p>
+        </div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h2 id="sidebarTitle">Menu</h2>
+            <button class="close-sidebar" id="closeSidebar">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+        </div>
+
+        <div class="sidebar-content">
+            <!-- Section Ajouter Membre -->
+            <div class="sidebar-section" id="addMemberSection">
+                <h3>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                    Ajouter un Membre
+                </h3>
+
+                <!-- Toggle Nouveau/Ancien -->
+                <div class="member-type-toggle">
+                    <button type="button" class="toggle-btn active" id="btnNewMember">Nouveau Membre</button>
+                    <button type="button" class="toggle-btn" id="btnOldMember">Ancien Membre</button>
+                </div>
+
+                <form id="addMemberForm">
+                    <!-- Formulaire Nouveau Membre -->
+                    <div id="newMemberForm">
+                        <div class="form-group">
+                            <label>Photo (optionnel)</label>
+                            <div class="photo-upload">
+                                <div class="photo-preview" id="photoPreview">
+                                    <svg class="photo-preview-placeholder" width="40" height="40" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2">
+                                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                        <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                                        <polyline points="21 15 16 10 5 21"></polyline>
+                                    </svg>
+                                </div>
+                                <input type="file" id="photoInput" accept="image/*">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Nom complet *</label>
+                            <input type="text" id="inputNomComplet" placeholder="Prénom et Nom">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Date d'anniversaire</label>
+                            <input type="date" id="inputDateNaissance" placeholder="Date d'anniversaire">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Téléphone</label>
+                            <input type="tel" id="inputNumero" placeholder="Numéro de téléphone">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Lieu d'habitation</label>
+                            <input type="text" id="inputLieuHabitation" placeholder="Adresse complète">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Localisation GPS (optionnel)</label>
+                            <input type="text" id="inputLocalisation" placeholder="Coordonnées GPS">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Date d'arrivée</label>
+                            <input type="date" id="inputDateArrivee" placeholder="Date d'arrivée">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Invité par</label>
+                            <input type="text" id="inputInvitePar" placeholder="Nom de la personne qui a invité">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Baptisé(e)</label>
+                            <select id="inputBaptise">
+                                <option value="">Sélectionner</option>
+                                <option value="oui">Oui</option>
+                                <option value="non">Non</option>
+                                <option value="en_cours">En cours</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Déjà chrétien(ne)?</label>
+                            <select id="inputDejaChretien">
+                                <option value="">Sélectionner</option>
+                                <option value="oui">Oui</option>
+                                <option value="non">Non</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group" id="groupEgliseOrigine" style="display: none;">
+                            <label>De quelle église?</label>
+                            <input type="text" id="inputEgliseOrigine" placeholder="Nom de l'église d'origine">
+                        </div>
+
+                        <div class="form-group" id="groupRoleEglise" style="display: none;">
+                            <label>Rôle dans l'église</label>
+                            <input type="text" id="inputRole" placeholder="Ex: Diacre, Choriste, Jeune...">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Par recommandation?</label>
+                            <select id="inputParRecommandation">
+                                <option value="">Sélectionner</option>
+                                <option value="oui">Oui</option>
+                                <option value="non">Non</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group" id="groupRecommandePar" style="display: none;">
+                            <label>Recommandé par qui?</label>
+                            <input type="text" id="inputRecommandePar" placeholder="Nom de la personne">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Sujet de prière (optionnel)</label>
+                            <textarea id="inputSujetPriere" placeholder="Sujets de prière pour ce membre..."></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Informations personnelles (optionnel)</label>
+                            <textarea id="inputInfosPerso" placeholder="Autres informations personnelles..."></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Formulaire Ancien Membre (simplifié) -->
+                    <div id="oldMemberForm" style="display: none;">
+                        <div class="form-group">
+                            <label>Photo (optionnel)</label>
+                            <div class="photo-upload">
+                                <div class="photo-preview" id="photoPreviewOld">
+                                    <svg class="photo-preview-placeholder" width="40" height="40" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2">
+                                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                        <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                                        <polyline points="21 15 16 10 5 21"></polyline>
+                                    </svg>
+                                </div>
+                                <input type="file" id="photoInputOld" accept="image/*">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Nom complet *</label>
+                            <input type="text" id="inputNomCompletOld" placeholder="Prénom et Nom">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Date d'anniversaire</label>
+                            <input type="date" id="inputDateNaissanceOld" placeholder="Date d'anniversaire">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Numéro de téléphone</label>
+                            <input type="tel" id="inputNumeroOld" placeholder="Numéro de téléphone">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Lieu d'habitation</label>
+                            <input type="text" id="inputLieuHabitationOld" placeholder="Adresse complète">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Localisation GPS (optionnel)</label>
+                            <input type="text" id="inputLocalisationOld" placeholder="Coordonnées GPS">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Rôle dans l'église</label>
+                            <input type="text" id="inputRoleOld" placeholder="Ex: Diacre, Choriste, Jeune...">
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-primary">Enregistrer</button>
+                </form>
+            </div>
+
+            <!-- Section Rapport de Présence -->
+            <div class="sidebar-section" id="reportSection">
+                <h3>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                        <line x1="16" y1="13" x2="8" y2="13"></line>
+                        <line x1="16" y1="17" x2="8" y2="17"></line>
+                        <polyline points="10 9 9 9 8 9"></polyline>
+                    </svg>
+                    Rapport de Présence
+                </h3>
+                <div class="date-selector">
+                    <label>Date:</label>
+                    <input type="date" id="reportDate">
+                </div>
+                <div class="date-selector">
+                    <label>Type d'événement:</label>
+                    <input type="text" id="reportEvent" placeholder="Ex: Culte du Dimanche, Mariage, Baptême..."
+                        value="Culte du Dimanche">
+                </div>
+                <div class="members-list" id="membersList"></div>
+                <button class="btn-primary" id="saveReport">Enregistrer le Rapport</button>
+            </div>
+
+            <!-- Section Statistiques -->
+            <div class="sidebar-section" id="statsSection">
+                <h3>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="12" y1="20" x2="12" y2="10"></line>
+                        <line x1="18" y1="20" x2="18" y2="4"></line>
+                        <line x1="6" y1="20" x2="6" y2="16"></line>
+                    </svg>
+                    Statistiques
+                </h3>
+                <div class="stats-filters">
+                    <select id="statsFilter">
+                        <option value="all">Tous les membres</option>
+                        <option value="individual">Membre spécifique</option>
+                    </select>
+                    <select id="memberSelect" style="display:none;"></select>
+                </div>
+                <div class="stats-display" id="statsDisplay">
+                    <p>Sélectionnez une option pour voir les statistiques</p>
+                </div>
+
+                <!-- Charts Section -->
+                <div class="charts-section">
+                    <h4 style="display: flex; align-items: center; justify-content: center; gap: 10px;">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <line x1="18" y1="20" x2="18" y2="10"></line>
+                            <line x1="12" y1="20" x2="12" y2="4"></line>
+                            <line x1="6" y1="20" x2="6" y2="14"></line>
+                        </svg>
+                        Graphiques
+                    </h4>
+
+                    <div class="chart-container">
+                        <h5>Évolution des Présences</h5>
+                        <canvas id="presenceChart"></canvas>
+                    </div>
+
+                    <div class="chart-container">
+                        <h5>Répartition par Rôle</h5>
+                        <canvas id="roleChart"></canvas>
+                    </div>
+
+                    <div class="chart-container">
+                        <h5>Taux de Présence par Membre (Top 10)</h5>
+                        <canvas id="memberChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="stats-general">
+                    <h4 style="display: flex; align-items: center; justify-content: center; gap: 10px;">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <line x1="18" y1="20" x2="18" y2="10"></line>
+                            <line x1="12" y1="20" x2="12" y2="4"></line>
+                            <line x1="6" y1="20" x2="6" y2="14"></line>
+                        </svg>
+                        Statistiques Générales
+                    </h4>
+                    <div id="generalStats"></div>
+                </div>
+            </div>
+
+            <!-- Section Modifier Photo -->
+            <div class="sidebar-section" id="uploadPhotoSection">
+                <h3 style="display: flex; align-items: center; gap: 10px;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                        <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                        <polyline points="21 15 16 10 5 21"></polyline>
+                    </svg>
+                    Modifier une Photo
+                </h3>
+
+                <div class="form-group">
+                    <label>Sélectionner un membre</label>
+                    <select id="photoMemberSelect">
+                        <option value="">Choisir un membre...</option>
+                    </select>
+                </div>
+
+                <div id="currentPhotoPreview" style="display: none; margin: 20px 0;">
+                    <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 10px; font-weight: 600;">
+                        Photo actuelle:</p>
+                    <div style="text-align: center;">
+                        <img id="currentPhotoImg" src="" alt="Photo actuelle"
+                            style="max-width: 150px; max-height: 150px; border-radius: var(--radius-md); box-shadow: var(--shadow-md);">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Nouvelle photo</label>
+                    <div class="photo-upload">
+                        <div class="photo-preview" id="photoPreviewUpload">
+                            <svg class="photo-preview-placeholder" width="40" height="40" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                                <polyline points="21 15 16 10 5 21"></polyline>
+                            </svg>
+                        </div>
+                        <input type="file" id="photoInputUpload" accept="image/*">
+                    </div>
+                </div>
+
+                <button type="button" class="btn-primary" id="savePhotoBtn" disabled>Enregistrer la Photo</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="chat-container">
+            <div class="chat-header">
+                <div class="header-left">
+                    <img src="logo.png" alt="Logo" class="header-logo">
+                    <div class="header-text">
+                        <h1>Assistant Destinée Glorieuse</h1>
+                        <p>Votre assistant intelligent</p>
+                    </div>
+                </div>
+                <div class="header-actions">
+                    <button class="icon-btn" id="btnUploadPhoto" title="Modifier une photo">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                            <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                            <polyline points="21 15 16 10 5 21"></polyline>
+                        </svg>
+                    </button>
+                    <button class="icon-btn" id="btnAddMember" title="Ajouter un membre">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2.5">
+                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
+                    </button>
+                    <button class="icon-btn" id="btnReport" title="Rapport de présence">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                        </svg>
+                    </button>
+                    <button class="icon-btn" id="btnStats" title="Statistiques">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <line x1="18" y1="20" x2="18" y2="10"></line>
+                            <line x1="12" y1="20" x2="12" y2="4"></line>
+                            <line x1="6" y1="20" x2="6" y2="14"></line>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="chat-messages" id="chatMessages"></div>
+
+            <!-- Bouton pour descendre rapidement -->
+            <button class="scroll-to-bottom" id="scrollToBottom" title="Aller en bas">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+                    style="position: relative; z-index: 1;">
+                    <path d="M12 4L12 20M12 20L18 14M12 20L6 14" stroke="currentColor" stroke-width="2.5"
+                        stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+            </button>
+
+            <div class="chat-input-container">
+                <input type="text" id="userInput" placeholder="Tapez votre message..." autocomplete="off">
+                <button id="sendBtn">Envoyer</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Conteneur de notifications -->
+    <div class="notifications-container" id="notificationsContainer"></div>
+
+    <script src="script.js"></script>
+    <script src="supabase-config.js"></script>
+</body>
+
+</html>
